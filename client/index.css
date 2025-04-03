@@ -9,6 +9,10 @@
 /* component styling */
 @import '../server/components/card/card.css';
 
+@import '../server/components/custom-input-select/custom-input-select.css';
+
+
+
 body {
   color: black;
   max-width: 1440px;

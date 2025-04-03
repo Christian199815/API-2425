@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1 class="h1">{{ title }}</h1>
+{% comment %} <h1 class="h1">{{ title }}</h1>
 
 <ul class="grid">
   {% for item in items %}
@@ -12,6 +12,9 @@
       </a>
     </li>
   {% endfor %}
-</ul>
+</ul> {% endcomment %}
+
+
+{% render 'server/components/custom-input-select/custom-input-select.liquid'%}
 
 {% endblock %}

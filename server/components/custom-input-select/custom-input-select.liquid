@@ -1,0 +1,25 @@
+<div class="custom-select-container" data-custom-select>
+
+  <input type="text" id="location-search" placeholder="Type to search locations..." class="location-search-input" data-location-search-input>
+
+  <input type="hidden" id="location-value" name="location" value="" data-location-value>
+
+  <div id="location-dropdown" class="custom-select-dropdown" data-custom-select-dropdown>
+
+    <ul id="location-options" data-location-options>
+
+      {% for location in locations %}
+
+        <li data-value="{{ location.place_id }}" data-lat="{{ location.lat }}" data-lon="{{ location.lon }}">
+
+          {{ location.display_name }}
+
+        </li>
+
+      {% endfor %}
+
+    </ul>
+
+  </div>
+
+</div>

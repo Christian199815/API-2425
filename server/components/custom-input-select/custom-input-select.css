@@ -1,8 +1,15 @@
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+[data-custom-select-dropdown][data-item-close] {
+  display: none;
 }
+
+[data-custom-select-dropdown][data-custom-select-open] {
+  display: block;
+}
+
+[data-location-search-input]:focus{
+    display: block;
+}
+
 
 
 
@@ -30,7 +37,7 @@
   border-top: none;
   border-radius: 0 0 4px 4px;
   z-index: 10;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 #location-options {
