@@ -1,25 +1,55 @@
+{% comment %}
+  Custom Select Component with Geolocation and Radius Input
+  Usage:
+  {% render 'server/components/custom-input-select/custom-input-select.liquid', 
+    placeholder: 'Type to search locations...'
+  %}
+{% endcomment %}
+
 <div class="custom-select-container" data-custom-select>
-
-  <input type="text" id="location-search" placeholder="Type to search locations..." class="location-search-input" data-location-search-input>
-
-  <input type="hidden" id="location-value" name="location" value="" data-location-value>
-
-  <div id="location-dropdown" class="custom-select-dropdown" data-custom-select-dropdown>
-
-    <ul id="location-options" data-location-options>
-
-      {% for location in locations %}
-
-        <li data-value="{{ location.place_id }}" data-lat="{{ location.lat }}" data-lon="{{ location.lon }}">
-
-          {{ location.display_name }}
-
-        </li>
-
-      {% endfor %}
-
-    </ul>
-
-  </div>
-
+  <form method="get" action="/" data-location-form>
+    <div class="custom-inputs-section">
+      <div class="custom-select-input-wrapper">
+        <input 
+          type="text" 
+          id="location-search" 
+          name="q"
+          placeholder="{{ placeholder | default: 'Type to search' }}" 
+          class="location-search-input" 
+          data-location-search-input
+          value="{{ searchTerm | default: '' }}"
+          list="location-options"
+        >
+        <button 
+          type="button" 
+          class="geolocation-button" 
+          title="Use my current location" 
+          data-geolocation-button
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+      </div>
+    
+      <div class="radius-control">
+        <label for="radius-input">Search radius (km):</label>
+        <input 
+          type="number" 
+          id="radius-input" 
+          name="radius"
+          min="1" 
+          max="160" 
+          value="40" 
+          class="radius-input" 
+          data-radius-input
+        >
+      </div>
+    </div>
+  </form>
+  
+  <datalist id="location-options">
+    <!-- Options will be populated client-side -->
+  </datalist>
 </div>

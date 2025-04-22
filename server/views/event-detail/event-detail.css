@@ -1,0 +1,392 @@
+/* Event Detail Styles */
+.event-detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+  
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  
+  .back-button:hover {
+    color: #0056b3;
+  }
+  
+  .back-arrow {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+  }
+  
+  /* Event Header */
+  .event-header {
+    margin-bottom: 2rem;
+  }
+  
+  .event-hero-image {
+    height: 380px;
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .event-title-section {
+    padding: 0 0 1rem 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  .event-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #222;
+  }
+  
+  .event-artist {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #444;
+  }
+  
+  .event-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+  
+  .genre-tag, .subgenre-tag {
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .genre-tag {
+    background-color: #e9f0ff;
+    color: #1a56db;
+  }
+  
+  .subgenre-tag {
+    background-color: #f0f9ff;
+    color: #0369a1;
+  }
+  
+  /* Event Content Layout */
+  .event-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .event-content {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  
+  /* Main Information Section */
+  .event-main-info section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .event-main-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  
+  /* Date & Time Section */
+  .event-date-time {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .date-display {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .date-day {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #0056b3;
+    padding: 0.25rem 1rem;
+    background-color: #f0f7ff;
+    border-radius: 8px;
+    margin-right: 1rem;
+    min-width: 3.5rem;
+    text-align: center;
+  }
+  
+  .date-month-year {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .date-month-year span:first-child {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .date-month-year span:last-child {
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .time-display {
+    font-size: 1.125rem;
+    color: #444;
+  }
+  
+  .time-tbd {
+    font-style: italic;
+    color: #777;
+    margin-left: 0.5rem;
+  }
+  
+  /* Description Section */
+  .event-info {
+    line-height: 1.6;
+    color: #444;
+  }
+  
+  .event-info p {
+    margin-bottom: 1rem;
+  }
+  
+  .event-notes {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 6px;
+    background-color: #fff9e6;
+    border-left: 4px solid #ffd700;
+  }
+  
+  .event-notes h4 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  /* Pricing Section */
+  .price-ranges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .price-range {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+  }
+  
+  .price-type {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .price-amount {
+    font-weight: 600;
+    color: #0056b3;
+  }
+  
+  /* Tickets Section */
+  .ticket-status {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  
+  .ticket-status.available {
+    background-color: #ecfdf5;
+    color: #047857;
+  }
+  
+  .ticket-status.unavailable {
+    background-color: #fef2f2;
+    color: #b91c1c;
+  }
+  
+  .status-icon {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+  }
+  
+  .ticket-button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: #0056b3;
+    color: white;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+  }
+  
+  .ticket-button:hover {
+    background-color: #004494;
+  }
+  
+  /* Sidebar */
+  .event-sidebar section {
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 1.5rem;
+  }
+  
+  .event-sidebar h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  
+  /* Venue Section */
+  .venue-details {
+    margin-bottom: 1.25rem;
+  }
+  
+  .venue-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+  }
+  
+  .venue-address {
+    font-style: normal;
+    line-height: 1.5;
+    color: #555;
+    margin-bottom: 1rem;
+  }
+  
+  .venue-link, .artist-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #e9ecef;
+    color: #495057;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .venue-link:hover, .artist-link:hover {
+    background-color: #ced4da;
+    color: #212529;
+  }
+  
+  .venue-map {
+    height: 250px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 1rem;
+  }
+  
+  /* Artists Section */
+  .artists-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  
+  .artist-card {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .artist-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  
+  .artist-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .artist-info {
+    flex-grow: 1;
+  }
+  
+  .artist-name {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #333;
+  }
+  
+  .artist-genre {
+    font-size: 0.875rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+  
+  .artist-link {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    .event-title {
+      font-size: 1.75rem;
+    }
+    
+    .event-artist {
+      font-size: 1.25rem;
+    }
+    
+    .event-hero-image {
+      height: 220px;
+    }
+    
+    .date-day {
+      font-size: 2rem;
+    }
+    
+    .venue-map {
+      height: 200px;
+    }
+  }
+  
+  /* No data placeholder */
+  .no-data {
+    color: #6c757d;
+    font-style: italic;
+  }

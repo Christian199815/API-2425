@@ -1,0 +1,19 @@
+{% comment %}
+  Events Overview Component with Vertical Carousel
+  Usage:
+  {% render 'events-overview-block/events-overview-block.liquid', 
+    events: events,
+    default_lat: default_lat,
+    default_lon: default_lon
+  %}
+{% endcomment %}
+
+<div class="events-overview" data-events-container>
+
+  <div id="loading" class="events-loading hidden">
+    <div class="spinner"></div>
+    <p>Searching for events...</p>
+  </div>
+  
+  {% render 'events-vertical-carrousel/events-vertical-carrousel.liquid', events: events %}
+</div>

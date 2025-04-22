@@ -1,56 +1,162 @@
-[data-custom-select-dropdown][data-item-close] {
-  display: none;
-}
-
-[data-custom-select-dropdown][data-custom-select-open] {
-  display: block;
-}
-
-[data-location-search-input]:focus{
-    display: block;
-}
-
-
-
-
+/* Custom Select Component Styles */
 .custom-select-container {
   position: relative;
   width: 100%;
-  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.location-search-form {
+  width: 100%;
+}
+
+.custom-inputs-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.custom-select-input-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 0.75rem;
+  width: 100%;
 }
 
 .location-search-input {
   width: 100%;
-  padding: 8px 12px;
+  padding: 0.75rem;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.geolocation-button {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #0056b3;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.geolocation-button:hover {
+  color: #003d82;
+}
+
+.geolocation-button[data-loading="true"] {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.geolocation-button[data-loading="true"]::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 86, 179, 0.2);
+  border-top-color: #0056b3;
+  border-radius: 50%;
+  position: absolute;
+  animation: spin 1s linear infinite;
+}
+
+/* Radius Control Section */
+.radius-control {
+  display: flex;
+  align-items: center;
+  background-color: #f8f9fa;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  min-width: fit-content;
+}
+
+.radius-control label {
+  font-size: 0.875rem;
+  color: #555;
+  white-space: nowrap;
+}
+
+.radius-input {
+  width: 60px;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Enhanced Dropdown Menu (only shown when JavaScript is enabled) */
 .custom-select-dropdown {
   position: absolute;
   width: 100%;
-  max-height: 300px;
+  max-height: 350px;
   overflow-y: auto;
-  background: white;
-  border: 1px solid #ccc;
-  border-top: none;
-  border-radius: 0 0 4px 4px;
-  z-index: 10;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  display: none;
 }
 
-#location-options {
+.custom-select-dropdown[data-display-block] {
+  display: block;
+}
+
+.custom-select-dropdown[data-display-none] {
+  display: none;
+}
+
+[data-location-options] {
   list-style: none;
-  margin: 0;
   padding: 0;
+  margin: 0;
 }
 
-#location-options li {
-  padding: 8px 12px;
+[data-location-options] li {
+  padding: 0.75rem 1rem;
   cursor: pointer;
+  border-bottom: 1px solid #eee;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-#location-options li:hover {
-  background-color: #f5f5f5;
+[data-location-options] li:hover {
+  background-color: #f5f9ff;
+}
+
+[data-location-options] li:last-child {
+  border-bottom: none;
+}
+
+/* Loading Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-inputs-section {
+    flex-direction: column;
+  }
+  
+  .radius-control {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

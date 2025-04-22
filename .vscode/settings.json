@@ -1,3 +1,6 @@
 {
-    "liveServer.settings.port": 5501
+    "liveServer.settings.port": 5501,
+    "markdown.styles": [
+        "https://socialsimulation.net/css/post.min.css"
+    ]
 }

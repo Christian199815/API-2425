@@ -1,0 +1,35 @@
+{% comment %}
+  Map Component with Style Switcher
+  Usage:
+  {% render 'components/map', 
+    lat: location.lat | default: 52.3676, 
+    lon: location.lon | default: 4.9041, 
+    name: location.display_name | default: 'Amsterdam' 
+  %}
+{% endcomment %}
+
+<div class="map-component relative">
+  <div id="leaflet-map" class="leaflet-map-container"
+    data-lat="{{ lat | default: 52.3676 }}" 
+    data-lon="{{ lon | default: 4.9041 }}" 
+    data-name="{{ name | default: 'Amsterdam' }}">
+    <!-- Map will load here -->
+    <div class="loading-placeholder text-center py-32">
+      Loading map...
+    </div>
+  </div>
+  <div class="map-controls">
+    <button id="map-style-toggle" type="button" class="map-style-toggle">Change Map Style</button>
+  </div>
+</div>
+
+{% if first_load %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+   integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+   integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+   crossorigin=""></script>
+<link rel="stylesheet" href="{{ 'map-component.css' | asset_url }}">
+<script src="{{ 'map-component.js' | asset_url }}" defer></script>
+{% endif %}

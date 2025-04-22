@@ -1,24 +1,16 @@
 /* global styles */
 @import 'reset.css';
 @import "typography.css";
+@import 'properties.css';
 
 /*.layout and view styling */
 @import '../server/layouts/base.css';
 @import '../server/views/index.css';
+@import '../server/views/event-detail/event-detail.css';
 
 /* component styling */
-@import '../server/components/card/card.css';
-
+@import '../server/components/event-card/card.css';
+@import '../server//components/events-vertical-carrousel/events-vertical-carrousel.css';
 @import '../server/components/custom-input-select/custom-input-select.css';
-
-
-
-body {
-  color: black;
-  max-width: 1440px;
-  margin: 0 auto;
-}
-
-main {
-  padding: 1rem;
-}
+@import '../server/components/map-view/map-view.css';
+@import '../server/components/events-overview-block/events-overview-block.css';

@@ -1,0 +1,36 @@
+{% comment %}
+  Simple Scrolling Events List
+  Usage:
+  {% render 'events-scrolling-list/events-scrolling-list.liquid', 
+    events: events
+  %}
+{% endcomment %}
+
+<div class="events-list-container">
+  <div id="events-count" class="events-count-display" data-events-count>
+    {% if events.size > 0 %}
+      <p>Found <span id="event-count" data-event-count>{{ events.size }}</span> events near you today</p>
+    {% else %}
+      <p>No events found for today in this area.</p>
+    {% endif %}
+  </div>
+  
+  <div id="loading" class="events-loading hidden">
+    <div class="spinner"></div>
+    <p>Searching for events...</p>
+  </div>
+  
+  <div id="events-list" class="events-scrolling-list" data-events-list>
+    {% if events.size > 0 %}
+      {% for event in events %}
+        <div class="event-item" data-event-item data-event-index="{{ forloop.index0 }}" data-event-id="{{ event.id }}">
+          {% render '../server/components/event-card/card.liquid', event: event %}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="no-events">
+        <p>No events found for today in this area.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>

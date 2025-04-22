@@ -1,0 +1,16 @@
+{% layout "base" %}
+
+{% block content %}
+<div class="error-container">
+  <h1>Something went wrong</h1>
+  <p>{{ error }}</p>
+  
+  {% if details %}
+  <div class="error-details">
+    {{ details }}
+  </div>
+  {% endif %}
+  
+  <a href="/" class="back-link">Back to Homepage</a>
+</div>
+{% endblock %}

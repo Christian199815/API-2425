@@ -1,0 +1,183 @@
+/* Events Overview Styles */
+.events-overview {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+}
+
+.events-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.events-count {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.events-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.events-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #4a90e2;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none;
+}
+
+.events-list {
+}
+
+.no-events,
+.error-message {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 40px;
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  color: #666;
+}
+
+/* Map marker styles */
+.center-marker-inner {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #4a90e2;
+  border: 3px solid white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.center-marker-inner:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+/* Event Map Markers */
+.event-marker {
+  background: transparent;
+  border: none;
+}
+
+/* Event Image */
+.event-image-container {
+  width: 120px;
+  height: 90px;
+  flex-shrink: 0;
+  margin-right: 1rem;
+  border-radius: 0.3rem;
+  overflow: hidden;
+}
+
+.event-marker-inner {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #e91e63;
+  border: 2px solid white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Event popup styles */
+.event-popup {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 5px;
+  max-width: 250px;
+
+  background-color: white;
+  border-radius: 5px;
+}
+
+.event-popup h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--event-popup-h4-color);
+}
+
+.event-popup p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: var(--event-popup-p-color);
+}
+
+.ticket-status-popup {
+  display: inline-block;
+  margin: 8px 0;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.view-event-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px 10px;
+  background-color: var(--view-event-btn-color);
+  color: var(--view-event-btn-txtcolor);
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.view-event-btn:hover {
+  background-color: var(--view-event-btn-hoverColor);
+}
+
+@media screen and (max-width: 768px) {
+  .events-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .events-filter {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .events-list {
+    grid-template-columns: 1fr;
+  }
+}

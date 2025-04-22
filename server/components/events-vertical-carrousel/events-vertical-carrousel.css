@@ -1,0 +1,205 @@
+/* Events Scrolling List Styles */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+.events-list-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem;
+  font-family: 'Inter', sans-serif;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.events-count-display {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.events-count-display p {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.events-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.events-loading.hidden {
+  display: none;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: #333;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.events-scrolling-list {
+  overflow-y: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  padding-right: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.event-item {
+  width: 100%;
+}
+
+.no-events {
+  text-align: center;
+  padding: 2rem 1rem;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.no-events p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}
+
+/* Card styles when in the scrolling list */
+.events-scrolling-list .event-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.events-scrolling-list .event-card:hover {
+  background-color: #f8f8f8;
+}
+
+.events-scrolling-list .event-collapsed-view {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.events-scrolling-list .event-image-container.collapsed {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.events-scrolling-list .event-image-container.collapsed img.event-image,
+.events-scrolling-list .event-image-container.collapsed .event-image-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.events-scrolling-list .event-image-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e0e0e0;
+  color: #666;
+  font-size: 0.7rem;
+}
+
+.events-scrolling-list .event-collapsed-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-left: 0.75rem;
+}
+
+.events-scrolling-list .event-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  max-width: 60%;
+  padding-right: 0.5rem;
+}
+
+.events-scrolling-list .event-distance {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #4a4a4a;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  min-width: 50px;
+  justify-content: flex-end;
+}
+
+.events-scrolling-list .event-distance svg {
+  flex-shrink: 0;
+  color: #666;
+}
+
+/* Hide expanded view */
+.events-scrolling-list .event-expanded-view {
+  display: none !important;
+}
+
+/* Make scrollbar more subtle */
+.events-scrolling-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.events-scrolling-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+}
+
+.events-scrolling-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .events-list-container {
+    padding: 0.5rem;
+  }
+  
+  .events-scrolling-list .event-title {
+    max-width: 50%;
+  }
+}

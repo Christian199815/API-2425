@@ -1,20 +1,38 @@
-{% layout "server/layouts/base.liquid" %}
+{% comment %} {% layout "server/layouts/base.liquid" %} {% endcomment %}
+{% layout "base" %}
 
 {% block content %}
 
-{% comment %} <h1 class="h1">{{ title }}</h1>
+  <section class="infomation-block"> 
+    {% comment %} Logo {% endcomment %}
+    {% render 'custom-input-select/custom-input-select' %}
 
-<ul class="grid">
-  {% for item in items %}
-    <li>
-      <a href="/plant/{{ item.id }}">
-        {% render 'server/components/card/card.liquid', item: item %}
-      </a>
-    </li>
-  {% endfor %}
-</ul> {% endcomment %}
+    <section class="events-section"  data-events-section >
+
+    {% render 'events-overview-block/events-overview-block', 
+   events: events,
+   default_lat: default_lat,
+   default_lon: default_lon
+    %}
+    </section>
+  </section>
 
 
-{% render 'server/components/custom-input-select/custom-input-select.liquid'%}
+
+
+
+
+  <section class="map-block">
+
+    {% render 'map-view/map-view', 
+      lat: locations[0].lat | default: 52.3676, 
+      lon: locations[0].lon | default: 4.9041, 
+      name: locations[0].display_name | default: 'Amsterdam',
+      first_load: true 
+    %}
+
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 {% endblock %}
