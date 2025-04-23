@@ -29,10 +29,12 @@
 .location-search-input {
   width: 100%;
   padding: 0.75rem;
+  background-color: #292929;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #c4c4c4;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); */
 }
 
 .geolocation-button {
@@ -40,7 +42,7 @@
   right: 10px;
   background: none;
   border: none;
-  color: #0056b3;
+  color: #fafafa;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -68,78 +70,99 @@
   animation: spin 1s linear infinite;
 }
 
+#location-options{
+  width: 100px;
+  left: 0;
+}
+/* 
+option {
+  background-color: #292929;
+  color: #c4c4c4;
+  padding: 8px;
+  font-size: 1rem;
+}
+
+/* Some browsers allow styling this way */
+datalist {
+  background-color: #292929;
+  border: 1px solid #ccc;
+  border-radius: 0 0 10px 10px;
+  width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  max-height: 300px;
+  overflow-y: auto;
+} 
+
 /* Radius Control Section */
 .radius-control {
   display: flex;
   align-items: center;
-  background-color: #f8f9fa;
+  background-color: transparent;
+  width: 12em;
+  border: 2px solid #c4c4c4;
+  border-radius: 11px;
   padding: 0.75rem;
-  border-radius: 4px;
   margin-bottom: 1rem;
   flex-wrap: nowrap;
   gap: 0.5rem;
   min-width: fit-content;
+  max-height: 60px;
 }
 
 .radius-control label {
   font-size: 0.875rem;
-  color: #555;
+  color: #c4c4c4;
   white-space: nowrap;
 }
 
 .radius-input {
   width: 60px;
   padding: 0.375rem 0.5rem;
-  border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
   border-radius: 4px;
   font-size: 0.875rem;
   text-align: center;
+  background-color: #292929;
+  color: #c4c4c4;
 }
 
-/* Enhanced Dropdown Menu (only shown when JavaScript is enabled) */
+/* Enhanced Dropdown Menu - DISABLED */
 .custom-select-dropdown {
-  position: absolute;
-  width: 100%;
-  max-height: 350px;
-  overflow-y: auto;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 10;
-  display: none;
+  display: none !important;
 }
 
+/* Hide dropdown even when JavaScript tries to show it */
 .custom-select-dropdown[data-display-block] {
-  display: block;
+  display: none !important;
 }
 
-.custom-select-dropdown[data-display-none] {
-  display: none;
+.filter-options{
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
 }
 
-[data-location-options] {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-[data-location-options] li {
-  padding: 0.75rem 1rem;
+.map-style-toggle {
+  background-color: transparent;
+  width: 12em;
+  height: 60px;
+  padding: 0.75rem;
+  border: 2px solid #c4c4c4;
+  border-radius: 11px;
+  /* padding: 8px 12px; */
   cursor: pointer;
-  border-bottom: 1px solid #eee;
-  font-size: 0.875rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-weight: bold;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  display: block !important;
+  color: #c4c4c4;
 }
 
-[data-location-options] li:hover {
-  background-color: #f5f9ff;
-}
-
-[data-location-options] li:last-child {
-  border-bottom: none;
+.map-style-toggle:hover {
+  background-color: #f4f4f4;
 }
 
 /* Loading Animation */

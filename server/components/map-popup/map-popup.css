@@ -1,0 +1,106 @@
+.map-popup {
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+    max-width: 300px;
+  }
+  
+  .map-popup-image {
+    width: 100%;
+    height: 120px;
+    overflow: hidden;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+  
+  .map-popup-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .map-popup-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: #333;
+  }
+  
+  .map-popup-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .map-popup-venue,
+  .map-popup-distance,
+  .map-popup-genre {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .map-popup-venue svg,
+  .map-popup-distance svg,
+  .map-popup-genre svg {
+    margin-right: 5px;
+    flex-shrink: 0;
+  }
+  
+  .map-popup-button {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #1a1a1a;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+  }
+  
+  .map-popup-button:hover {
+    background-color: #333;
+  }
+
+  .leaflet-popup {
+    z-index: 2000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    pointer-events: auto !important;
+  }
+  
+  /* Fix popup content visibility */
+  .leaflet-popup-content-wrapper {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: white !important;
+    color: #333 !important;
+  }
+  
+  /* Fix popup tip/arrow */
+  .leaflet-popup-tip-container,
+  .leaflet-popup-tip {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure map container doesn't clip popups */
+  .leaflet-map-container,
+  .leaflet-container,
+  .leaflet-pane {
+    overflow: visible !important;
+  }
+  
+  /* Increase z-index of marker pane to be above other map elements */
+  .leaflet-marker-pane {
+    z-index: 650 !important;
+  }
+  
+  /* Make popup pane even higher */
+  .leaflet-popup-pane {
+    z-index: 700 !important;
+  }

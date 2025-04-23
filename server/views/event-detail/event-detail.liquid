@@ -1,207 +1,130 @@
 {% layout "base" %}
 
 {% block content %}
-<div class="event-detail-container" data-event-detail="{{ event.id }}">
+<section class="event-detail-container" data-event-detail="{{ event.id }}">
+
+<section class="event-image-main">
+  {% if event.images and event.images.size > 0 %}
+    <div class="event-hero-image">
+      <img src="{{ event.images[0].url }}" alt="{{ event.name }}" class="hero-image">
+    </div>
+  {% endif %}
+
   <a href="/" class="back-button">
-    <span class="back-arrow">&larr;</span> Back to Events
+  <span class="back-arrow">&larr;</span> Back to Events
   </a>
 
-  <div class="event-header">
-    {% if event.images and event.images.size > 0 %}
-      <div class="event-hero-image">
-        <img src="{{ event.images[0].url }}" alt="{{ event.name }}" class="hero-image">
+</section>
+
+<section class="event-header">
+  <h1 class="event-title">{{ event.name }}</h1>
+  {% if event.attractions and event.attractions.size > 0 %}
+    <h2 class="event-artist">{{ event.attractions | map: 'name' | join: ', ' }}</h2>
+  {% endif %}
+  <section class="event-date-time">
+    {% if event.dates and event.dates.start %}
+      <div class="date-display">
+        <div class="date-day">{{ event.dates.start.localDate | date: "%d" }}</div>
+        <div class="date-month-year">
+          <span>{{ event.dates.start.localDate | date: "%b" }}</span>
+          <span>{{ event.dates.start.localDate | date: "%Y" }}</span>
+        </div>
+      </div>
+      <div class="time-display">
+        <span class="event-time">{{ event.dates.start.localTime | date: "%I:%M %p" }}</span>
+        {% if event.dates.start.dateTBD %}<span class="time-tbd">(Date TBD)</span>{% endif %}
+        {% if event.dates.start.timeTBD %}<span class="time-tbd">(Time TBD)</span>{% endif %}
+      </div>
+    {% else %}
+      <p class="no-data">Date and time information unavailable</p>
+    {% endif %}
+  </section>
+
+  <section class="event-description">
+    <h3>About This Event</h3>
+    {% if event.info %}
+      <div class="event-info">{{ event.info }}</div>
+    {% else %}
+      <div class="event-info">
+        <p>Join us for an exciting performance by {% if event.attractions and event.attractions.size > 0 %}{{ event.attractions | map: 'name' | join: ', ' }}{% else %}our featured artist{% endif %}.</p>
+        
+        <p>This event promises to be a memorable experience for all attendees. Don't miss out!</p>
       </div>
     {% endif %}
     
-    <div class="event-title-section">
-      <h1 class="event-title">{{ event.name }}</h1>
-      
-      {% if event.attractions and event.attractions.size > 0 %}
-        <h2 class="event-artist">{{ event.attractions | map: 'name' | join: ', ' }}</h2>
+    {% if event.pleaseNote %}
+      <div class="event-notes">
+        <h4>Please Note</h4>
+        <p>{{ event.pleaseNote }}</p>
+      </div>
+    {% endif %}
+  </section>
+</section>
+
+<section class="event-blocks">
+  {% if event.classifications and event.classifications.size > 0 %}
+    <div class="event-genres">
+      {% if event.classifications[0].genre and event.classifications[0].genre.name != 'Undefined' %}
+        <span class="genre-tag">{{ event.classifications[0].genre.name }}</span>
       {% endif %}
       
-      {% if event.classifications and event.classifications.size > 0 %}
-        <div class="event-genres">
-          {% if event.classifications[0].genre and event.classifications[0].genre.name != 'Undefined' %}
-            <span class="genre-tag">{{ event.classifications[0].genre.name }}</span>
-          {% endif %}
-          
-          {% if event.classifications[0].subGenre and event.classifications[0].subGenre.name != 'Undefined' %}
-            <span class="subgenre-tag">{{ event.classifications[0].subGenre.name }}</span>
-          {% endif %}
-        </div>
+      {% if event.classifications[0].subGenre and event.classifications[0].subGenre.name != 'Undefined' %}
+        <span class="subgenre-tag">{{ event.classifications[0].subGenre.name }}</span>
       {% endif %}
     </div>
-  </div>
+  {% endif %}
 
-  <div class="event-content">
-    <div class="event-main-info">
-      <section class="event-date-time">
-        <h3>Date & Time</h3>
-        {% if event.dates and event.dates.start %}
-          <div class="date-display">
-            <div class="date-day">{{ event.dates.start.localDate | date: "%d" }}</div>
-            <div class="date-month-year">
-              <span>{{ event.dates.start.localDate | date: "%b" }}</span>
-              <span>{{ event.dates.start.localDate | date: "%Y" }}</span>
-            </div>
-          </div>
-          <div class="time-display">
-            <span class="event-time">{{ event.dates.start.localTime | date: "%I:%M %p" }}</span>
-            {% if event.dates.start.dateTBD %}<span class="time-tbd">(Date TBD)</span>{% endif %}
-            {% if event.dates.start.timeTBD %}<span class="time-tbd">(Time TBD)</span>{% endif %}
-          </div>
-        {% else %}
-          <p class="no-data">Date and time information unavailable</p>
-        {% endif %}
-      </section>
+  {% if event.url %}
+  <a href="{{ event.url }}" target="_blank" class="ticket-button" data-ticket-link="{{ event.id }}">
+    Buy Tickets
+  </a>
+  {% endif %}
+</section>
 
-      <section class="event-description">
-        <h3>About This Event</h3>
-        {% if event.info %}
-          <div class="event-info">{{ event.info }}</div>
-        {% else %}
-          <div class="event-info">
-            <p>Join us for an exciting performance by {% if event.attractions and event.attractions.size > 0 %}{{ event.attractions | map: 'name' | join: ', ' }}{% else %}our featured artist{% endif %}.</p>
-            
-            <p>This event promises to be a memorable experience for all attendees. Don't miss out!</p>
-          </div>
-        {% endif %}
+<section class="event-venue-block" data-venue-id="{{ event._embedded.venues[0].id }}">
+  {% if event._embedded and event._embedded.venues and event._embedded.venues.size > 0 %}
+      <div class="venue-details">
+        <h4 class="venue-name">{{ event._embedded.venues[0].name }}</h4>
         
-        {% if event.pleaseNote %}
-          <div class="event-notes">
-            <h4>Please Note</h4>
-            <p>{{ event.pleaseNote }}</p>
-          </div>
+        <address class="venue-address">
+          {% if event._embedded.venues[0].address %}
+            <div>{{ event._embedded.venues[0].address.line1 }}</div>
+          {% endif %}
+          
+          {% if event._embedded.venues[0].city %}
+            <div>
+              {{ event._embedded.venues[0].city.name }}
+              {% if event._embedded.venues[0].state %}
+                , {{ event._embedded.venues[0].state.stateCode }}
+              {% endif %}
+              {% if event._embedded.venues[0].postalCode %}
+                {{ event._embedded.venues[0].postalCode }}
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          {% if event._embedded.venues[0].country %}
+            <div>{{ event._embedded.venues[0].country.name }}</div>
+          {% endif %}
+        </address>
+        
+        {% if event._embedded.venues[0].url %}
+          <a href="{{ event._embedded.venues[0].url }}" target="_blank" class="venue-link" data-venue-link="{{ event._embedded.venues[0].id }}">
+            Visit Venue Website
+          </a>
         {% endif %}
-      </section>
+      </div>
+      
+      <div class="venue-map" data-venue-map 
+           data-lat="{{ event._embedded.venues[0].location.latitude }}" 
+           data-lon="{{ event._embedded.venues[0].location.longitude }}" 
+           data-name="{{ event._embedded.venues[0].name }}">
+      </div>
+  {% endif %}
+</section>
 
-      {% if event.priceRanges and event.priceRanges.size > 0 %}
-        <section class="event-pricing">
-          <h3>Pricing</h3>
-          <div class="price-ranges">
-            {% for range in event.priceRanges %}
-              <div class="price-range">
-                <span class="price-type">{{ range.type | default: "Standard" }}</span>
-                <span class="price-amount">{{ range.min }}{% if range.max and range.max != range.min %} - {{ range.max }}{% endif %} {{ range.currency }}</span>
-              </div>
-            {% endfor %}
-          </div>
-        </section>
-      {% endif %}
+</section>
 
-      {% if event.dates and event.dates.status %}
-        <section class="event-tickets">
-          <h3>Tickets</h3>
-          {% assign ticket_status_class = "unavailable" %}
-          {% if event.dates.status.code == 'onsale' %}
-            {% assign ticket_status_class = "available" %}
-          {% endif %}
-          
-          <div class="ticket-status {{ ticket_status_class }}">
-            {% if event.dates.status.code == 'onsale' %}
-              <span class="status-icon">✓</span> Tickets Available Now
-            {% else %}
-              <span class="status-icon">✗</span> 
-              {% if event.dates.status.code contains "_" %}
-                {{ event.dates.status.code | replace: "_", " " | capitalize }}
-              {% else %}
-                {{ event.dates.status.code | capitalize }}
-              {% endif %}
-            {% endif %}
-          </div>
-          
-          {% if event.url %}
-            <a href="{{ event.url }}" target="_blank" class="ticket-button" data-ticket-link="{{ event.id }}">
-              Buy Tickets
-            </a>
-          {% endif %}
-        </section>
-      {% endif %}
-    </div>
-
-    <div class="event-sidebar">
-      {% if event._embedded and event._embedded.venues and event._embedded.venues.size > 0 %}
-        <section class="event-venue" data-venue-id="{{ event._embedded.venues[0].id }}">
-          <h3>Venue</h3>
-          <div class="venue-details">
-            <h4 class="venue-name">{{ event._embedded.venues[0].name }}</h4>
-            
-            <address class="venue-address">
-              {% if event._embedded.venues[0].address %}
-                <div>{{ event._embedded.venues[0].address.line1 }}</div>
-              {% endif %}
-              
-              {% if event._embedded.venues[0].city %}
-                <div>
-                  {{ event._embedded.venues[0].city.name }}
-                  {% if event._embedded.venues[0].state %}
-                    , {{ event._embedded.venues[0].state.stateCode }}
-                  {% endif %}
-                  {% if event._embedded.venues[0].postalCode %}
-                    {{ event._embedded.venues[0].postalCode }}
-                  {% endif %}
-                </div>
-              {% endif %}
-              
-              {% if event._embedded.venues[0].country %}
-                <div>{{ event._embedded.venues[0].country.name }}</div>
-              {% endif %}
-            </address>
-            
-            {% if event._embedded.venues[0].url %}
-              <a href="{{ event._embedded.venues[0].url }}" target="_blank" class="venue-link" data-venue-link="{{ event._embedded.venues[0].id }}">
-                Visit Venue Website
-              </a>
-            {% endif %}
-          </div>
-          
-          <div class="venue-map" data-venue-map 
-               data-lat="{{ event._embedded.venues[0].location.latitude }}" 
-               data-lon="{{ event._embedded.venues[0].location.longitude }}" 
-               data-name="{{ event._embedded.venues[0].name }}">
-          </div>
-        </section>
-      {% endif %}
-
-      {% if event.attractions and event.attractions.size > 0 %}
-        <section class="event-artists">
-          <h3>Artists</h3>
-          <div class="artists-list">
-            {% for artist in event.attractions %}
-              <div class="artist-card" data-artist-id="{{ artist.id }}">
-                {% if artist.images and artist.images.size > 0 %}
-                  <div class="artist-image">
-                    <img src="{{ artist.images[0].url }}" alt="{{ artist.name }}">
-                  </div>
-                {% endif %}
-                
-                <div class="artist-info">
-                  <h4 class="artist-name">{{ artist.name }}</h4>
-                  
-                  {% if artist.classifications and artist.classifications.size > 0 %}
-                    <div class="artist-genre">
-                      {{ artist.classifications[0].genre.name }}
-                      {% if artist.classifications[0].subGenre %}
-                        / {{ artist.classifications[0].subGenre.name }}
-                      {% endif %}
-                    </div>
-                  {% endif %}
-                  
-                  {% if artist.url %}
-                    <a href="{{ artist.url }}" target="_blank" class="artist-link" data-artist-link="{{ artist.id }}">
-                      More Info
-                    </a>
-                  {% endif %}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        </section>
-      {% endif %}
-    </div>
-  </div>
-</div>
 
 {% if event._embedded and event._embedded.venues and event._embedded.venues.size > 0 and event._embedded.venues[0].location %}
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -209,5 +132,13 @@
     crossorigin=""></script>
 {% endif %}
 
-{% comment %} <script src="/js/event-detail.js"></script> {% endcomment %}
 {% endblock %}
+
+
+
+
+
+
+
+
+

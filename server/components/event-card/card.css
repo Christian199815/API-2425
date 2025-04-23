@@ -1,91 +1,29 @@
-/* Event Card Styles */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 .event-card {
-  width: 320px;
-  background: #ffffff;
+  width: 100%;
+  max-width: 320px;
+  background: transparent;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   font-family: 'Inter', sans-serif;
-  cursor: pointer;
-  transition: height 0.3s ease, transform 0.2s ease;
-}
-
-/* Collapsed State */
-.event-card .event-expanded-view {
-  display: none;
-}
-
-.event-card.expanded .event-collapsed-view {
-  display: none;
-}
-
-.event-card.expanded .event-expanded-view {
-  display: block;
-}
-
-/* Collapsed View Styles */
-.event-collapsed-view {
+  transition: transform 0.2s ease;
+  color: #c4c4c4;
   display: flex;
-  flex-direction: column;
 }
 
-.event-image-container.collapsed {
-  width: 100%;
-  padding-bottom: 100%; /* 1:1 Aspect Ratio */
-  position: relative;
-  overflow: hidden;
-  background: #f5f5f5;
-}
-
-.event-image-container.collapsed img.event-image,
-.event-image-container.collapsed .event-image-placeholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.event-collapsed-content {
-  padding: 1rem;
-}
-
-.event-collapsed-content .event-title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #1a1a1a;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.3;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.event-distance {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #4a4a4a;
-  font-size: 0.875rem;
-}
-
-/* Expanded State */
-.event-card.expanded {
-  transform: scale(1.02);
+.event-card:hover {
+  transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Expanded View Styles */
 .event-image-container {
   width: 100%;
   height: 180px;
   position: relative;
   overflow: hidden;
-  background: #f5f5f5;
+  background: transparent;
 }
 
 .event-image {
@@ -105,90 +43,44 @@
 }
 
 .event-content {
-  padding: 1.5rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .event-title {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #c4c4c4;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.event-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.event-venue,
-.event-date,
-.event-genre {
+.event-distance {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #4a4a4a;
-  font-size: 0.9rem;
+  /* color: #4a4a4a; */
+  font-size: 0.875rem;
 }
 
-.event-venue svg,
-.event-date svg,
-.event-genre svg,
-.event-price svg,
 .event-distance svg {
   flex-shrink: 0;
-  color: #666;
-}
-
-.event-time {
-  color: #666;
-  margin-left: 0.25rem;
-}
-
-.event-subgenre {
-  color: #666;
-  font-size: 0.85rem;
+  color: #c4c4c4;
 }
 
 .venue-coordinates {
   display: none; /* Hide coordinates visually but keep for JS access */
 }
 
-.event-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  background: #1a1a1a;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  margin-top: 1rem;
-}
-
-.event-link:hover {
-  background: #333;
-}
-
-.event-link svg {
-  transition: transform 0.2s ease;
-}
-
-.event-link:hover svg {
-  transform: translateX(2px);
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .event-card {
-    width: 100%;
-    max-width: 320px;
+    max-width: 100%;
   }
 }

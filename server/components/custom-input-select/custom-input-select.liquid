@@ -32,20 +32,25 @@
           </svg>
         </button>
       </div>
-    
-      <div class="radius-control">
-        <label for="radius-input">Search radius (km):</label>
-        <input 
-          type="number" 
-          id="radius-input" 
-          name="radius"
-          min="1" 
-          max="160" 
-          value="40" 
-          class="radius-input" 
-          data-radius-input
-        >
-      </div>
+      <section class="filter-options">
+        <div class="radius-control">
+          <label for="radius-input">Search radius (km):</label>
+          <input 
+            type="number" 
+            id="radius-input" 
+            name="radius"
+            min="1" 
+            max="160" 
+            value="40" 
+            class="radius-input" 
+            data-radius-input
+          >
+        </div>
+        <div class="map-controls">
+          <button id="map-style-toggle" type="button" class="map-style-toggle">Change Map Style</button>
+        </div>
+      </section>
+
     </div>
   </form>
   

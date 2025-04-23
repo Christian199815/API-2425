@@ -1,17 +1,14 @@
-// Map Component JavaScript
+// Map Component with Server-Rendered Popups
 (function() {
   // Debug flag - set to true to see debugging messages in console
-  const DEBUG = true;
+  const DEBUG = false;
   
-  function log(...args) {
-    if (DEBUG) console.log('[Map Component]', ...args);
-  }
-
-  // Global variable to track initialization status
+  // Global variables - defined at the top to avoid reference errors
   let mapInitialized = false;
   let pendingUpdates = [];
+  let eventMarkers = [];
 
-  // Map style definitions - using the most reliable tile providers
+  // Map style definitions
   const mapStyles = [
     {
       name: 'OSM Standard',
@@ -33,32 +30,25 @@
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>',
       maxZoom: 19,
       subdomains: 'abcd'
-    },
-    {
-      name: 'Satellite',
-      // Using MapBox satellite tiles which are more reliable
-      url: 'https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZXhhbXBsZW1hcGJveCIsImEiOiJjbHZ4eDdhdXIwNXljMmpsODVkMmhldzk2In0.lY9-6g1DsQ4xEJVhVYt6kA',
-      attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19,
-      tileSize: 512,
-      zoomOffset: -1
     }
   ];
+  
+  // Helper function for logging
+  function log(...args) {
+    if (DEBUG) console.log('[Map Component]', ...args);
+  }
 
   // Initialize all map components on the page
   function initializeMaps() {
     const mapContainers = document.querySelectorAll('.leaflet-map-container');
-    log('Initializing maps, found:', mapContainers.length);
     
     if (mapContainers.length === 0) {
-      log('No map containers found to initialize');
       return false;
     }
     
     mapContainers.forEach(container => {
       // Check if this map has already been initialized
       if (container.dataset.initialized === 'true') {
-        log('Map already initialized, skipping:', container.id);
         return;
       }
       
@@ -67,7 +57,6 @@
       const lon = parseFloat(container.dataset.lon || 4.9041);
       const name = container.dataset.name || 'Location';
       
-      log('Creating map with coordinates:', { lat, lon, name });
       
       try {
         // Clear container first to prevent any issues with reinitialization
@@ -93,10 +82,8 @@
           fadeAnimation: false,
           zoomAnimation: false,
           markerZoomAnimation: false,
-          // Using SVG for better tile quality
           preferCanvas: false,
           renderer: L.svg(),
-          // Important: Don't set minZoom too low
           minZoom: 3,
           maxZoom: 18
         });
@@ -171,7 +158,6 @@
         
         // Mark as initialized
         container.dataset.initialized = 'true';
-        log('Map initialized successfully');
         
         // Force a resize event right away
         map.invalidateSize(true);
@@ -179,7 +165,6 @@
         // Sequential refreshes to ensure all tiles are loaded
         setTimeout(() => {
           map.invalidateSize(true);
-          log('Map size refreshed (1st pass)');
           
           // Second refresh
           setTimeout(() => {
@@ -188,13 +173,11 @@
             // Handle any tiles that failed to load
             const emptyTiles = document.querySelectorAll('.leaflet-tile:not(.leaflet-tile-loaded)');
             if (emptyTiles.length > 0) {
-              log('Found empty tiles, forcing reload:', emptyTiles.length);
               // Force tile layer reload
               map.removeLayer(tileLayer);
               map.addLayer(tileLayer);
             }
             
-            log('Map size refreshed (2nd pass)');
           }, 500);
           
         }, 100);
@@ -202,7 +185,6 @@
         // Add reload handler for missing tiles
         container.addEventListener('error', function(e) {
           if (e.target && e.target.classList && e.target.classList.contains('leaflet-tile')) {
-            log('Tile loading error detected, retrying');
             // Retry loading the tile
             setTimeout(() => {
               e.target.src = e.target.src + '?' + new Date().getTime();
@@ -214,18 +196,15 @@
         window.addEventListener('load', function() {
           setTimeout(() => {
             map.invalidateSize(true);
-            log('Map size refreshed after full page load');
           }, 500);
         });
         
         // Add event listener for when viewport changes
         map.on('moveend', function() {
-          log('Map moved');
         });
         
         // Add event listener to handle zoom and ensure tiles are loaded
         map.on('zoomend', function() {
-          log('Map zoomed');
           // Short delay to allow tiles to start loading
           setTimeout(() => {
             // Find any empty tiles and force them to reload
@@ -254,9 +233,14 @@
     // Mark initialization as complete
     mapInitialized = true;
     
+    // Set up event listeners for the event features
+    setupEventIntegration();
+    
+    // Try to load initial events
+    tryLoadInitialEvents();
+    
     // Process any pending updates
     if (pendingUpdates.length > 0) {
-      log('Processing', pendingUpdates.length, 'pending updates');
       pendingUpdates.forEach(update => {
         updateAllMaps(update.lat, update.lon, update.name);
       });
@@ -264,6 +248,408 @@
     }
     
     return true;
+  }
+  
+  // Try to load and display initial events
+  function tryLoadInitialEvents() {
+    if (typeof window.getInitialEventsData === 'function') {
+      try {
+        const initialEvents = window.getInitialEventsData();
+        if (initialEvents && initialEvents.length > 0) {
+          log(`Found ${initialEvents.length} initial events to add to map`);
+          
+          // Get the first map container
+          const mapContainer = document.querySelector('.leaflet-map-container');
+          if (mapContainer && mapContainer.mapInstance) {
+            const map = mapContainer.mapInstance;
+            const center = map.getCenter();
+            
+            // Add events to map
+            addEventsToMap(initialEvents, center.lat, center.lng);
+          }
+        }
+      } catch (error) {
+        console.error('[Map Component] Error loading initial events:', error);
+      }
+    }
+  }
+  
+  // Set up event integration
+  function setupEventIntegration() {
+    // Listen for new events data
+    document.addEventListener('eventsDataLoaded', handleEventsDataLoaded);
+    
+    // Listen for highlight event marker request
+    document.addEventListener('highlightEventMarker', handleHighlightEventMarker);
+    
+    // Add custom CSS for event markers and popups
+    addEventMarkerStyles();
+  }
+  
+  // Handle when events data is loaded
+  function handleEventsDataLoaded(e) {
+    if (!e.detail || !e.detail.events) {
+      log('No events data in eventsDataLoaded event');
+      return;
+    }
+    
+    const events = e.detail.events;
+    log(`Events data loaded: ${events.length} events`);
+    
+    // Get the first map container
+    const mapContainer = document.querySelector('.leaflet-map-container');
+    if (!mapContainer || !mapContainer.mapInstance) {
+      log('No map instance found');
+      return;
+    }
+    
+    const map = mapContainer.mapInstance;
+    const center = map.getCenter();
+    
+    // Add events to map
+    addEventsToMap(events, center.lat, center.lng);
+  }
+  
+  // Handle highlight event marker request
+  function handleHighlightEventMarker(e) {
+    if (!e.detail || !e.detail.eventId) {
+      log('No event ID in highlightEventMarker event');
+      return;
+    }
+    
+    const eventId = e.detail.eventId;
+    log('Highlighting event marker:', eventId);
+    
+    highlightEventOnMap(eventId);
+  }
+
+  function forcePopupDisplay(marker, event) {
+    console.log("Forcing popup display for marker:", marker);
+    
+    // Ensure the marker has the event data associated with it
+    marker.eventData = event;
+    
+    // First, unbind any existing popup
+    marker.unbindPopup();
+    
+    // Create a simpler popup to test if basic popups work
+    const basicPopupContent = `
+      <div style="padding:10px;min-width:200px;">
+        <h3 style="margin:0 0 10px;font-weight:bold;">${event.name}</h3>
+        <p>${event._embedded?.venues?.[0]?.name || 'Venue'}</p>
+        <a href="/event/${event.id}" style="display:block;background:#000;color:#fff;padding:8px;text-align:center;border-radius:4px;margin-top:10px;text-decoration:none;">View Details</a>
+      </div>
+    `;
+    
+    // Bind a simple popup directly
+    marker.bindPopup(basicPopupContent, {
+      offset: [0, -10],
+      autoPan: true,
+      closeButton: true,
+      autoClose: false,
+      closeOnEscapeKey: false
+    });
+    
+    // Explicitly open the popup
+    setTimeout(() => {
+      marker.openPopup();
+      console.log("Popup opened programmatically");
+    }, 100);
+    
+    // Add a direct click handler to the marker DOM element
+    const markerElement = marker.getElement();
+    if (markerElement) {
+      markerElement.addEventListener('click', function(e) {
+        console.log("Direct marker element click detected");
+        marker.openPopup();
+      });
+    }
+    
+    // Return a function to test popup manually
+    return function() {
+      console.log("Manual popup test triggered");
+      marker.openPopup();
+    };
+  }
+  
+  function addEventsToMap(events, centerLat, centerLon) {
+    // Get the first map container
+    const mapContainer = document.querySelector('.leaflet-map-container');
+    if (!mapContainer || !mapContainer.mapInstance) {
+      console.log('No map instance found for adding events');
+      return;
+    }
+    
+    const map = mapContainer.mapInstance;
+    
+    console.log(`Adding ${events.length} event markers to map`);
+    
+    // Clear any existing event markers
+    clearEventMarkers(map);
+    
+    // Create center marker
+    try {
+      const centerMarker = L.marker([centerLat, centerLon], {
+        icon: L.divIcon({
+          html: '<div style="width:24px;height:24px;border-radius:50%;background:#3388ff;border:3px solid white;box-shadow:0 0 5px rgba(0,0,0,0.5);"></div>',
+          className: '',
+          iconSize: [30, 30],
+          iconAnchor: [15, 15]
+        })
+      }).addTo(map);
+      
+      centerMarker.bindPopup('Search Location');
+      eventMarkers.push(centerMarker);
+    } catch (e) {
+      console.error('Error adding center marker:', e);
+    }
+  
+    // Create a global object to store popup testers
+    window.popupTesters = {};
+  
+    // Add markers for each event venue
+    events.forEach(event => {
+      if (!event._embedded || !event._embedded.venues || !event._embedded.venues[0]) {
+        return;
+      }
+      
+      const venue = event._embedded.venues[0];
+      if (!venue.location || !venue.location.latitude || !venue.location.longitude) {
+        return;
+      }
+      
+      const venueLat = parseFloat(venue.location.latitude);
+      const venueLon = parseFloat(venue.location.longitude);
+      
+      if (isNaN(venueLat) || isNaN(venueLon)) {
+        return;
+      }
+      
+      console.log(`Adding marker for event ${event.id} at ${venueLat},${venueLon}`);
+      
+      // Get color based on event type
+      let eventColor = '#1DB954';  // Default green
+      
+      if (event.classifications && event.classifications.length > 0) {
+        const classification = event.classifications[0];
+        if (classification.segment && classification.segment.name) {
+          // Get color based on segment
+          const segmentName = classification.segment.name;
+          eventColor = window.EVENT_TYPE_COLORS?.[segmentName] || 
+                      window.EVENT_TYPE_COLORS?.[classification.genre?.name] || 
+                      window.EVENT_TYPE_COLORS?.['Default'] || 
+                      '#1DB954'; // Fallback if EVENT_TYPE_COLORS is undefined
+        }
+      }
+      
+      try {
+        // Create marker
+        const marker = L.marker([venueLat, venueLon], {
+          icon: L.divIcon({
+            html: `<div style="width:20px;height:20px;border-radius:50%;background:${eventColor};border:2px solid white;box-shadow:0 0 3px rgba(0,0,0,0.5);"></div>`,
+            className: '',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          }),
+          eventId: event.id
+        }).addTo(map);
+        
+        // Force popup to display
+        window.popupTesters[event.id] = forcePopupDisplay(marker, event);
+        
+        // Store event ID on marker for highlighting
+        marker.eventId = event.id;
+        eventMarkers.push(marker);
+        
+        // Add click handler to highlight card
+        marker.on('click', function() {
+          console.log("Marker clicked for event:", event.id);
+          
+          // Highlight corresponding event card
+          if (typeof window.highlightEventCard === 'function') {
+            window.highlightEventCard(event.id);
+          }
+          
+          // Explicitly open popup again
+          this.openPopup();
+        });
+      } catch (e) {
+        console.error(`Error creating marker for event ${event.id}:`, e);
+      }
+    });
+    
+    console.log(`Successfully added ${events.length} event markers`);
+    
+    // Adjust map bounds to show all markers
+    if (eventMarkers.length > 1) {
+      try {
+        const bounds = L.featureGroup(eventMarkers).getBounds();
+        map.fitBounds(bounds, {
+          padding: [50, 50],
+          maxZoom: 13
+        });
+      } catch (e) {
+        // Fallback to center view
+        map.setView([centerLat, centerLon], 10);
+      }
+    }
+    
+    // Return instructions for testing
+    console.log("To test popups manually, use: window.popupTesters['event-id']()");
+    console.log("Available event IDs:", Object.keys(window.popupTesters).join(", "));
+  }
+  
+
+// Fetch server-rendered popup for an event
+async function fetchEventPopup(event, marker) {
+  try {
+    // Default popup content while loading
+    marker.bindPopup(`<div class="loading-popup">Loading event details...</div>`);
+    
+    // Fetch the popup HTML from the server
+    const response = await fetch('/api/render-map-popup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ event })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+    
+    const popupHtml = await response.text();
+    
+    // Update the marker's popup with the server-rendered HTML
+    marker.unbindPopup();
+    marker.bindPopup(popupHtml);
+    
+    // Store the rendered popup on the event for future use
+    event.renderedPopup = popupHtml;
+    
+  } catch (error) {
+    console.error(`Error fetching popup for event ${event.id}:`, error);
+    
+    // Use fallback popup if server rendering fails
+    const venue = event._embedded?.venues?.[0]?.name || 'Unknown Venue';
+    const genre = event.classifications?.[0]?.segment?.name || 'Music';
+    
+    marker.unbindPopup();
+    marker.bindPopup(`
+      <div style="padding:5px;min-width:150px;">
+        <h4 style="margin:0 0 5px;font-size:16px;">${event.name}</h4>
+        <p style="margin:5px 0;"><strong>${venue}</strong></p>
+        <p style="margin:5px 0;font-size:14px;color:#555;">${genre}</p>
+        <a href="/event/${event.id}" style="display:inline-block;background:#1a1a1a;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;font-size:14px;margin-top:5px;">View Details</a>
+      </div>
+    `);
+  }
+}
+  
+  // Clear all event markers from the map
+  function clearEventMarkers(map) {
+    if (!map) {
+      // Try to get map from the first container
+      const mapContainer = document.querySelector('.leaflet-map-container');
+      if (mapContainer && mapContainer.mapInstance) {
+        map = mapContainer.mapInstance;
+      } else {
+        log('No map instance found for clearing markers');
+        return;
+      }
+    }
+    
+    log(`Clearing ${eventMarkers.length} event markers`);
+    
+    // Remove each marker from the map
+    eventMarkers.forEach(marker => {
+      if (marker) {
+        try {
+          map.removeLayer(marker);
+        } catch (error) {
+          console.error('Error removing marker:', error);
+        }
+      }
+    });
+    
+    // Clear the array
+    eventMarkers = [];
+  }
+  
+  // Highlight an event on the map
+  function highlightEventOnMap(eventId) {
+    // Find the marker with this event ID
+    const marker = eventMarkers.find(m => m.eventId === eventId);
+    
+    if (!marker) {
+      log(`No marker found for event ID: ${eventId}`);
+      return;
+    }
+    
+    // Get the first map container
+    const mapContainer = document.querySelector('.leaflet-map-container');
+    if (!mapContainer || !mapContainer.mapInstance) {
+      log('No map instance found for highlighting');
+      return;
+    }
+    
+    const map = mapContainer.mapInstance;
+    
+    // Open the popup
+    marker.openPopup();
+    
+    // Pan to the marker
+    map.setView(marker.getLatLng(), 14);
+    
+    // Add a temporary highlight effect
+    try {
+      const highlight = L.circle(marker.getLatLng(), {
+        color: marker.options.eventColor || '#1DB954',
+        fillColor: marker.options.eventColor || '#1DB954',
+        fillOpacity: 0.2,
+        radius: 300
+      }).addTo(map);
+      
+      // Remove highlight after 3 seconds
+      setTimeout(() => {
+        if (map.hasLayer(highlight)) {
+          map.removeLayer(highlight);
+        }
+      }, 3000);
+    } catch (e) {
+      console.error('Error creating highlight circle:', e);
+    }
+  }
+  
+  // Add CSS for event markers
+  function addEventMarkerStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+      /* Event marker styles */
+      .event-marker-inner {
+        width: 20px;
+        height: 20px;
+        background-color: #ff5500;
+        border-radius: 50%;
+        border: 2px solid white;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        transition: transform 0.2s;
+      }
+      
+      .event-marker-inner:hover {
+        transform: scale(1.2);
+      }
+      
+      /* Loading popup style */
+      .loading-popup {
+        padding: 10px;
+        text-align: center;
+        color: #555;
+        font-style: italic;
+      }
+    `;
+    document.head.appendChild(style);
   }
   
   // Set up map style toggle button
@@ -326,7 +712,6 @@
             
           }, 100);
           
-          log('Map style changed to:', newStyle.name);
         });
       });
       
@@ -338,16 +723,13 @@
   // Function to update a single map with new coordinates
   function updateMap(mapContainer, lat, lon, name) {
     if (!mapContainer) {
-      log('Cannot update map: container not found');
       return false;
     }
     
     if (!mapContainer.mapInstance && !mapContainer.leafletMap) {
-      log('Cannot update map: no map instance found on container');
       return false;
     }
     
-    log('Updating map to:', { lat, lon, name });
     
     try {
       // Get map instance, preferring the explicit property if available
@@ -355,7 +737,6 @@
       const marker = mapContainer.leafletMarker || mapContainer.marker;
       
       if (!map || !marker) {
-        log('Map or marker reference not found');
         return false;
       }
       
@@ -399,14 +780,12 @@
         // Try to reload any missing tiles
         const emptyTiles = document.querySelectorAll('.leaflet-tile:not(.leaflet-tile-loaded)');
         if (emptyTiles.length > 0) {
-          log('Found empty tiles after map update, forcing reload');
           // Force tile layer reload
           map.removeLayer(mapContainer.tileLayer);
           map.addLayer(mapContainer.tileLayer);
         }
       }, 500);
       
-      log('Map updated successfully');
       return true;
     } catch (error) {
       console.error('[Map Component] Error updating map:', error);
@@ -419,22 +798,18 @@
     // Validate input parameters
     if (typeof lat !== 'number' || isNaN(lat) || 
         typeof lon !== 'number' || isNaN(lon)) {
-      log('Invalid coordinates for updateAllMaps:', { lat, lon });
       return false;
     }
     
     if (!mapInitialized) {
-      log('Maps not yet initialized, queuing update for later');
       pendingUpdates.push({ lat, lon, name });
       return false;
     }
     
-    log('Updating all maps to:', { lat, lon, name });
     
     // Find all map containers
     const mapContainers = document.querySelectorAll('.leaflet-map-container');
     if (mapContainers.length === 0) {
-      log('No map containers found to update');
       return false;
     }
     
@@ -452,14 +827,11 @@
   
   // Setup location selection event listener
   function setupLocationListener() {
-    log('Setting up location selection listener');
     
     // Listen for the custom locationSelected event
     document.addEventListener('locationSelected', function(e) {
-      log('locationSelected event received:', e.detail);
       
       if (!e.detail) {
-        log('No detail provided in locationSelected event');
         return;
       }
       
@@ -468,26 +840,22 @@
       // Validate the data
       if (typeof lat !== 'number' || isNaN(lat) || 
           typeof lon !== 'number' || isNaN(lon)) {
-        log('Invalid coordinates in event:', e.detail);
         return;
       }
       
       updateAllMaps(lat, lon, name);
     });
     
-    log('Location selection listener setup complete');
   }
   
   // Direct connection to the select component
   function setupDirectConnection() {
-    log('Setting up direct connection to select component');
     
     document.addEventListener('click', function(e) {
       // Check if the clicked element is an option in the location dropdown
       const selectedOption = e.target.closest('[data-location-options] li');
       if (!selectedOption) return;
       
-      log('Location option clicked directly:', selectedOption);
       
       const lat = parseFloat(selectedOption.dataset.lat);
       const lon = parseFloat(selectedOption.dataset.lon);
@@ -501,7 +869,6 @@
       }
     });
     
-    log('Direct connection setup complete');
   }
   
   // Global function to change map style
@@ -556,7 +923,6 @@
           // Try to reload any missing tiles
           const emptyTiles = document.querySelectorAll('.leaflet-tile:not(.leaflet-tile-loaded)');
           if (emptyTiles.length > 0) {
-            log('Found empty tiles after style change, forcing reload');
             // Force tile layer reload
             container.mapInstance.removeLayer(container.tileLayer);
             container.mapInstance.addLayer(container.tileLayer);
@@ -587,7 +953,6 @@
   
   // Global function to refresh all maps
   window.refreshMaps = function() {
-    log('Manual map refresh requested');
     
     // Force invalidateSize on all maps
     document.querySelectorAll('.leaflet-map-container').forEach(container => {
@@ -609,7 +974,6 @@
   // Handle empty tiles globally
   document.addEventListener('error', function(e) {
     if (e.target && e.target.classList && e.target.classList.contains('leaflet-tile')) {
-      log('Global tile error handler caught a tile loading error');
       // Set empty tile to transparent
       e.target.style.background = 'transparent';
       // Add retry class
@@ -623,14 +987,21 @@
     }
   }, true);
   
+  // Add CSS for empty tile fix
+  const style = document.createElement('style');
+  style.textContent = `
+    .leaflet-tile.tile-error {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+    }
+  `;
+  document.head.appendChild(style);
+  
   // Initialize when the DOM is ready
   function init() {
-    log('Initializing map component');
-    
     // Check if Leaflet is available
     if (typeof L === 'undefined') {
-      log('Leaflet not loaded, waiting...');
-      
       // Wait for Leaflet to load
       let leafletCheckAttempts = 0;
       const maxAttempts = 10;
@@ -647,16 +1018,212 @@
         }
       }, 200);
     } else {
-      log('Leaflet already loaded');
       finishInit();
     }
   }
+
+  // Map Component Event Handler Fix
+// Add this to your Map Component JavaScript to improve handling of event updates
+
+// Make sure the map component properly handles the eventsDataLoaded event
+function enhanceMapEventHandling() {
+  console.log("Enhancing map event handling");
+  
+  const mapContainer = document.querySelector('.leaflet-map-container');
+  if (mapContainer) {
+    if (mapContainer.mapInstance) {
+      console.log("Found map instance via container.mapInstance");
+      return mapContainer.mapInstance;
+    }
+    if (mapContainer.leafletMap) {
+      console.log("Found map instance via container.leafletMap");
+      return mapContainer.leafletMap;
+    }
+  }
+  
+  // Re-register the event listener to ensure it's active
+  document.removeEventListener('eventsDataLoaded', handleEventsDataLoaded);
+  document.addEventListener('eventsDataLoaded', handleEventsDataLoaded);
+  
+  console.log("Re-registered eventsDataLoaded event listener");
+  
+  // Also monitor locationSelected event directly
+  document.removeEventListener('locationSelected', handleLocationSelected);
+  document.addEventListener('locationSelected', handleLocationSelected);
+  
+  console.log("Re-registered locationSelected event listener");
+  
+  // Add debug handler
+  window.debugMapEvents = function() {
+    console.log("Map instance:", mapInstance);
+    console.log("Event markers:", eventMarkers ? eventMarkers.length : "not defined");
+    console.log("Map initialized:", mapInitialized);
+    
+    // Test with sample data
+    const testEvents = generateTestEvents(mapInstance.getCenter(), 5);
+    console.log("Generated test events:", testEvents);
+    
+    const testEvent = new CustomEvent('eventsDataLoaded', {
+      detail: { events: testEvents }
+    });
+    
+    console.log("Dispatching test eventsDataLoaded event");
+    document.dispatchEvent(testEvent);
+  };
+  
+  console.log("Added window.debugMapEvents() function for testing");
+}
+
+// Helper to find the map instance
+function findMapInstance() {
+  // Try to get from container
+  const mapContainer = document.querySelector('.leaflet-map-container');
+  if (mapContainer && (mapContainer.mapInstance || mapContainer.leafletMap)) {
+    return mapContainer.mapInstance || mapContainer.leafletMap;
+  }
+  
+  // Try to get from Leaflet internal storage
+  if (window.L && typeof L._leaflet_id_map !== 'undefined') {
+    try {
+      const leafletMaps = Object.values(L._leaflet_id_map).filter(obj => obj && obj._mapPane);
+      if (leafletMaps.length > 0) {
+        return leafletMaps[0];
+      }
+    } catch (e) {
+      console.error("Error finding map from Leaflet:", e);
+    }
+  }
+  
+  return null;
+}
+
+// Enhanced event data handler
+function handleEventsDataLoaded(e) {
+  console.log("eventsDataLoaded event received");
+  
+  if (!e.detail || !e.detail.events) {
+    console.log("No events data in eventsDataLoaded event");
+    return;
+  }
+  
+  const events = e.detail.events;
+  console.log(`Received ${events.length} events from eventsDataLoaded event`);
+  
+  // Find the map instance
+  const mapInstance = findMapInstance();
+  if (!mapInstance) {
+    console.error("No map instance found for adding events");
+    return;
+  }
+  
+  // Get center coordinates
+  const center = mapInstance.getCenter();
+  const centerLat = center.lat;
+  const centerLng = center.lng;
+  
+  // Clear existing markers and add new ones
+  try {
+    // Make sure eventMarkers is defined
+    if (typeof eventMarkers === 'undefined') {
+      console.log("eventMarkers was undefined, creating new array");
+      window.eventMarkers = [];
+      eventMarkers = window.eventMarkers;
+    }
+    
+    // Clear existing markers
+    clearEventMarkers(mapInstance);
+    
+    // Add new events to map
+    addEventsToMap(events, centerLat, centerLng);
+    
+    console.log(`Successfully updated map with ${events.length} events`);
+  } catch (error) {
+    console.error("Error updating map with new events:", error);
+  }
+}
+
+// Direct handler for location changes
+function handleLocationSelected(e) {
+  console.log("locationSelected event received directly in map component");
+  
+  if (!e.detail) return;
+  
+  const { lat, lon, name } = e.detail;
+  
+  if (typeof lat !== 'number' || isNaN(lat) || 
+      typeof lon !== 'number' || isNaN(lon)) {
+    return;
+  }
+  
+  // Update the map view
+  const mapInstance = findMapInstance();
+  if (!mapInstance) {
+    console.error("No map instance found for updating location");
+    return;
+  }
+  
+  // Update map view
+  mapInstance.setView([lat, lon], 13);
+  
+  // Update center marker if it exists
+  if (eventMarkers && eventMarkers.length > 0) {
+    const centerMarker = eventMarkers[0];
+    centerMarker.setLatLng([lat, lon]);
+    centerMarker.bindPopup(name || 'Selected Location').openPopup();
+  }
+  
+  console.log(`Map updated to new location: ${lat}, ${lon}, "${name}"`);
+}
+
+// Generate test events around a center point
+function generateTestEvents(center, count) {
+  const events = [];
+  const centerLat = center.lat;
+  const centerLng = center.lng;
+  
+  for (let i = 0; i < count; i++) {
+    // Random position around center
+    const lat = centerLat + (Math.random() - 0.5) * 0.05;
+    const lng = centerLng + (Math.random() - 0.5) * 0.05;
+    
+    events.push({
+      id: 'test-' + i,
+      name: 'Test Event ' + (i + 1),
+      _embedded: {
+        venues: [{
+          name: 'Venue ' + (i + 1),
+          location: {
+            latitude: lat,
+            longitude: lng
+          }
+        }]
+      }
+    });
+  }
+  
+  return events;
+}
+
+function clearAllMarkers(map) {
+  map.eachLayer(function(layer) {
+    // Remove all marker layers
+    if (layer instanceof L.Marker) {
+      map.removeLayer(layer);
+    }
+  });
+  
+  // Reset the markers array
+  eventMarkers = [];
+}
+
+// Call this function after the map component is initialized
+// You can add this to your existing initialization code
+// or call it directly
+enhanceMapEventHandling();
   
   function finishInit() {
     // Fix Leaflet's default icon paths globally
     if (typeof L !== 'undefined' && L.Icon && L.Icon.Default) {
-      log('Setting global Leaflet default icon paths');
-      
       delete L.Icon.Default.prototype._getIconUrl;
       
       L.Icon.Default.mergeOptions({
@@ -673,11 +1240,8 @@
     setupLocationListener();
     setupDirectConnection();
     
-    log('Map component initialization complete');
-    
     // Add window resize handler to refresh map
     window.addEventListener('resize', function() {
-      log('Window resized, refreshing maps');
       document.querySelectorAll('.leaflet-map-container').forEach(container => {
         if (container.mapInstance) {
           container.mapInstance.invalidateSize(true);
@@ -688,17 +1252,6 @@
     });
   }
   
-  // Add CSS for empty tile fix
-  const style = document.createElement('style');
-  style.textContent = `
-    .leaflet-tile.tile-error {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-  `;
-  document.head.appendChild(style);
-  
   // Initialize when the document is loaded
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
@@ -706,4 +1259,5 @@
     // Small delay to ensure all scripts are loaded
     setTimeout(init, 10);
   }
+
 })();

@@ -1,101 +1,38 @@
 {% comment %}
-  Collapsible Event Card Component
+  Simplified Event Card Component
   Usage:
   {% render 'server/components/event-card/card.liquid', event: event %}
 {% endcomment %}
 
 <div class="event-card" data-event-card>
-  <!-- Collapsed View -->
-  <div class="event-collapsed-view">
-    <div class="event-image-container collapsed">
-      {% if event.images and event.images[0] %}
-        <img 
-          src="{{ event.images[0].url }}" 
-          alt="{{ event.name }}"
-          loading="lazy"
-          class="event-image"
-        >
-      {% else %}
-        <div class="event-image-placeholder">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-            <polyline points="21 15 16 10 5 21"></polyline>
-          </svg>
-        </div>
-      {% endif %}
-    </div>
-    
-    <div class="event-collapsed-content">
-      <h3 class="event-title">{{ event.name }}</h3>
-      <div class="event-distance">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
+  <div class="event-image-container">
+    {% if event.images and event.images[0] %}
+      <img 
+        src="{{ event.images[0].url }}" 
+        alt="{{ event.name }}"
+        loading="lazy"
+        class="event-image"
+      >
+    {% else %}
+      <div class="event-image-placeholder">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
         </svg>
-        <span data-distance>Calculating...</span>
       </div>
-    </div>
+    {% endif %}
   </div>
   
-  <!-- Expanded View -->
-  <div class="event-expanded-view">
-    <div class="event-content">
-      <h3 class="event-title">{{ event.name }}</h3>
-      
-      <div class="event-details">
-        {% if event._embedded and event._embedded.venues and event._embedded.venues[0] %}
-          <div class="event-venue">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            <span>{{ event._embedded.venues[0].name }}</span>
-            <span class="venue-coordinates" data-lat="{{ event._embedded.venues[0].location.latitude }}" data-lon="{{ event._embedded.venues[0].location.longitude }}"></span>
-          </div>
-        {% endif %}
-        
-        {% if event.dates and event.dates.start %}
-          <div class="event-date">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            <span>{{ event.dates.start.localDate }}</span>
-            {% if event.dates.start.localTime %}
-              <span class="event-time">{{ event.dates.start.localTime }}</span>
-            {% endif %}
-          </div>
-        {% endif %}
-        
-        {% if event.classifications and event.classifications[0] %}
-          {% assign genre = event.classifications[0].genre.name %}
-          {% assign subgenre = event.classifications[0].subGenre.name %}
-          
-          <div class="event-genre">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-              <line x1="7" y1="7" x2="7.01" y2="7"></line>
-            </svg>
-            <span>{{ genre }}</span>
-            {% if genre != subgenre and subgenre != 'Undefined' %}
-              <span class="event-subgenre">{{ subgenre }}</span>
-            {% endif %}
-          </div>
-        {% endif %}
-        <!-- Price information block removed -->
-      </div>
-      
-      <a href="{{ event.url }}" target="_blank" rel="noopener noreferrer" class="event-link">
-        View Event
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-      </a>
+  <div class="event-content">
+    <h3 class="event-title">{{ event.name }}</h3>
+    <div class="event-distance">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+      <span data-distance>Calculating...</span>
     </div>
+    <span class="venue-coordinates" data-lat="{{ event._embedded.venues[0].location.latitude }}" data-lon="{{ event._embedded.venues[0].location.longitude }}"></span>
   </div>
 </div>

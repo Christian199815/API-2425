@@ -2,41 +2,20 @@
 .map-component {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
+
+  border-radius: 25px 0 0 25px;
 }
 
 .leaflet-map-container {
   width: 100%;
-  height: 400px;
+  height: 100%;
   border-radius: 8px;
   z-index: 1;
   background: #f8f8f8;
 }
 
-.map-controls {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  z-index: 1500 !important;
-}
-
-.map-style-toggle {
-  background-color: white;
-  border: 2px solid rgba(0,0,0,0.2);
-  border-radius: 4px;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-  opacity: 1 !important;
-  pointer-events: auto !important;
-  display: block !important;
-}
-
-.map-style-toggle:hover {
-  background-color: #f4f4f4;
-}
 
 /* Fix for Leaflet tile display issues */
 .leaflet-tile-container {
@@ -124,4 +103,321 @@
   .leaflet-tile-container {
     transform: none !important;
   }
+}
+
+/* Event Marker and Popup Styles */
+
+/* Event marker styles */
+.event-marker {
+  background: transparent;
+  border: none;
+}
+
+.event-marker-inner {
+  width: 20px;
+  height: 20px;
+  background-color: #ff5500;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.event-marker-inner:hover {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* Center marker styling */
+.center-marker {
+  background: transparent;
+  border: none;
+}
+
+.center-marker-inner {
+  width: 24px;
+  height: 24px;
+  background-color: #2196f3;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Event popup styles */
+.event-popup-container {
+  margin-bottom: 10px;
+}
+
+.event-popup {
+  padding: 8px;
+}
+
+.event-popup h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.3;
+}
+
+.event-popup p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.ticket-status-popup {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.ticket-status-popup.available {
+  background-color: #4caf50;
+  color: white;
+}
+
+.ticket-status-popup.unavailable {
+  background-color: #f44336;
+  color: white;
+}
+
+.view-event-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background-color: #2196f3;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+
+.view-event-btn:hover {
+  background-color: #0d8bf2;
+}
+
+/* Highlighted event card */
+.event-card.highlighted {
+  border: 2px solid #ff5500 !important;
+  box-shadow: 0 0 10px rgba(255, 85, 0, 0.5) !important;
+  transition: all 0.3s ease;
+}
+
+/* Fix for leaflet popups */
+.leaflet-popup-content-wrapper {
+  max-width: 300px;
+  min-width: 200px;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px;
+  line-height: 1.4;
+}
+
+/* Ensure popup close button is visible */
+.leaflet-container a.leaflet-popup-close-button {
+  top: 3px;
+  right: 3px;
+  padding: 4px;
+  color: #999;
+  font-weight: bold;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #333;
+}
+
+/* Event Markers and Map Styles */
+
+/* Basic marker styles */
+.event-marker-inner {
+  width: 100%;
+  height: 100%;
+  background-color: #607D8B; /* Default color */
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Center marker */
+.center-marker-inner {
+  width: 100%;
+  height: 100%;
+  background-color: #FF5722; /* Orange */
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+/* Hover effect for markers */
+.event-marker-inner:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Popup styles */
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.event-popup {
+  padding: 12px;
+  max-width: 250px;
+}
+
+.event-popup h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.event-popup p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.event-popup .event-type {
+  font-weight: bold;
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.ticket-status-popup {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.ticket-status-popup.available {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.ticket-status-popup.unavailable {
+  background-color: #F44336;
+  color: white;
+}
+
+.view-event-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #1976D2;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.view-event-btn:hover {
+  background-color: #1565C0;
+}
+
+/* Legend styles */
+.event-type-legend {
+  background-color: white;
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+}
+
+.event-type-legend h4 {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.legend-text {
+  font-size: 12px;
+}
+
+/* Marker highlight animation */
+.marker-highlight {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+}
+
+/* Highlighted card styles */
+.event-card.highlighted {
+  box-shadow: 0 0 0 3px #1976D2;
+  position: relative;
+  z-index: 10;
+}
+
+/* Card expansion styles */
+.event-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.event-card.expanded {
+  max-height: none;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.event-card .event-details {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.event-card:not(.expanded) .event-details {
+  max-height: 150px;
+  overflow: hidden;
+}
+
+/* Distance display */
+.distance {
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: #F5F5F5;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-left: 8px;
 }

@@ -2,20 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get all event cards
     const eventCards = document.querySelectorAll('[data-event-card]');
     
-    // Add click event listeners to toggle expanded state
+    // Calculate distance for each card
     eventCards.forEach(card => {
-      card.addEventListener('click', function(e) {
-        // Don't toggle if clicking on the event link
-        if (e.target.closest('.event-link')) {
-          e.stopPropagation();
-          return;
-        }
-        
-        // Toggle expanded class
-        this.classList.toggle('expanded');
-      });
-      
-      // Calculate and display distance if user location is available
       calculateDistance(card);
     });
     
@@ -24,7 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
       const distanceElement = card.querySelector('[data-distance]');
       const venueCoordinates = card.querySelector('.venue-coordinates');
       
-      if (!distanceElement || !venueCoordinates) return;
+      if (!distanceElement || !venueCoordinates) {
+        if (distanceElement) distanceElement.textContent = 'No location data';
+        return;
+      }
       
       const venueLat = parseFloat(venueCoordinates.getAttribute('data-lat'));
       const venueLon = parseFloat(venueCoordinates.getAttribute('data-lon'));
@@ -37,9 +28,16 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Get user's location if allowed
       if (navigator.geolocation) {
+        // Set a timeout to ensure we eventually display something
+        const timeoutId = setTimeout(() => {
+          distanceElement.textContent = 'Distance unavailable';
+        }, 5000); // 5 second timeout
+        
         navigator.geolocation.getCurrentPosition(
           // Success callback
           (position) => {
+            clearTimeout(timeoutId); // Clear the timeout
+            
             const userLat = position.coords.latitude;
             const userLon = position.coords.longitude;
             
@@ -52,12 +50,32 @@ document.addEventListener('DOMContentLoaded', function() {
               : `${distance.toFixed(1)} km away`;
           },
           // Error callback
-          () => {
-            distanceElement.textContent = 'Location unavailable';
+          (error) => {
+            clearTimeout(timeoutId); // Clear the timeout
+            
+            // Handle different error cases
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                distanceElement.textContent = 'Location access denied';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                distanceElement.textContent = 'Location unavailable';
+                break;
+              case error.TIMEOUT:
+                distanceElement.textContent = 'Location request timed out';
+                break;
+              default:
+                distanceElement.textContent = 'Could not determine distance';
+            }
+          },
+          // Options
+          {
+            timeout: 4000, // 4 second timeout
+            maximumAge: 60000 // Accept cached positions up to 1 minute old
           }
         );
       } else {
-        distanceElement.textContent = 'Location unavailable';
+        distanceElement.textContent = 'Geolocation not supported';
       }
     }
     
