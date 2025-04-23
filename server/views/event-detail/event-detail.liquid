@@ -4,15 +4,19 @@
 <section class="event-detail-container" data-event-detail="{{ event.id }}">
 
 <section class="event-image-main">
+  <a href="/" class="back-button">
+  <span class="back-arrow">&larr;</span> Back to Events
+  </a>
+
   {% if event.images and event.images.size > 0 %}
     <div class="event-hero-image">
       <img src="{{ event.images[0].url }}" alt="{{ event.name }}" class="hero-image">
     </div>
-  {% endif %}
 
-  <a href="/" class="back-button">
-  <span class="back-arrow">&larr;</span> Back to Events
-  </a>
+  {% endif %}
+  <div id="battery-status" class="battery-status-container"></div>
+
+
 
 </section>
 
@@ -81,10 +85,11 @@
   {% endif %}
 </section>
 
+
 <section class="event-venue-block" data-venue-id="{{ event._embedded.venues[0].id }}">
   {% if event._embedded and event._embedded.venues and event._embedded.venues.size > 0 %}
       <div class="venue-details">
-        <h4 class="venue-name">{{ event._embedded.venues[0].name }}</h4>
+        <h4 class="venue-name">Venue: {{ event._embedded.venues[0].name }}</h4>
         
         <address class="venue-address">
           {% if event._embedded.venues[0].address %}

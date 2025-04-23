@@ -34,63 +34,33 @@
   function initBatteryMonitor() {
     log('Initializing battery status monitor');
     
+    // Get the battery status element from the DOM
+    const batteryStatusDiv = document.getElementById('battery-status');
+    
+    if (!batteryStatusDiv) {
+      log('Battery status element not found in DOM');
+      return;
+    }
+    
     if ('getBattery' in navigator) {
       navigator.getBattery().then((battery) => {
-        // Create battery status element to insert in the DOM
-        const batteryStatusDiv = document.createElement('div');
-        batteryStatusDiv.id = 'battery-status';
-        batteryStatusDiv.className = 'battery-status-container';
-        
-        // Style the battery status container
-        batteryStatusDiv.style.padding = '10px 15px';
-        batteryStatusDiv.style.margin = '15px 0';
-        batteryStatusDiv.style.borderRadius = '5px';
-        batteryStatusDiv.style.fontFamily = 'inherit';
-        batteryStatusDiv.style.fontSize = '14px';
-        batteryStatusDiv.style.textAlign = 'center';
-        batteryStatusDiv.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-        
-        // Find the event-image-main section to insert our battery status
-        const eventImageSection = document.querySelector('.event-image-main');
-        
-        if (eventImageSection) {
-          // Insert after the hero image but before the back button
-          const heroImage = eventImageSection.querySelector('.event-hero-image');
-          const backButton = eventImageSection.querySelector('.back-button');
-          
-          if (heroImage && backButton) {
-            eventImageSection.insertBefore(batteryStatusDiv, backButton);
-            log('Battery status element inserted into DOM');
-          } else {
-            // If elements not found, just append to the section
-            eventImageSection.appendChild(batteryStatusDiv);
-            log('Battery status element appended to event-image-main');
-          }
-        } else {
-          log('event-image-main section not found');
-          return;
-        }
-        
         function updateBatteryStatus() {
           const level = battery.level * 100;
           const charging = battery.charging;
           
-          // Update the battery status message and styling based on conditions
+          // Remove all status classes first
+          batteryStatusDiv.classList.remove('battery-good', 'battery-charging', 'battery-low');
+          
+          // Update the battery status message and classes based on conditions
           if (level > 50) {
             batteryStatusDiv.textContent = `Battery: ${level.toFixed(0)}% - Battery level is good`;
-            batteryStatusDiv.style.backgroundColor = '#d4edda';
-            batteryStatusDiv.style.color = '#155724';
-            batteryStatusDiv.style.border = '1px solid #c3e6cb';
+            batteryStatusDiv.classList.add('battery-good');
           } else if (level >= 30 && level <= 50 && charging) {
             batteryStatusDiv.textContent = `Battery: ${level.toFixed(0)}% - Please keep charging`;
-            batteryStatusDiv.style.backgroundColor = '#fff3cd';
-            batteryStatusDiv.style.color = '#856404';
-            batteryStatusDiv.style.border = '1px solid #ffeeba';
+            batteryStatusDiv.classList.add('battery-charging');
           } else if (level < 50) {
             batteryStatusDiv.textContent = `Battery: ${level.toFixed(0)}% - Please charge your device`;
-            batteryStatusDiv.style.backgroundColor = '#f8d7da';
-            batteryStatusDiv.style.color = '#721c24';
-            batteryStatusDiv.style.border = '1px solid #f5c6cb';
+            batteryStatusDiv.classList.add('battery-low');
           }
         }
         
@@ -107,6 +77,8 @@
       });
     } else {
       log('Battery API not supported');
+      batteryStatusDiv.textContent = 'Battery status not available';
+      batteryStatusDiv.classList.add('battery-unavailable');
     }
   }
   
@@ -158,7 +130,6 @@
         
         // Add venue marker with custom icon
         const marker = L.marker([lat, lon], { icon: venueIcon }).addTo(map);
-        marker.bindPopup(`<strong>${venueName}</strong>`).openPopup();
         
         // Store map reference
         mapElement.mapInstance = map;

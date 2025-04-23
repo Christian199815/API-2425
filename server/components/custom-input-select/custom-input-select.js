@@ -50,27 +50,27 @@
       let currentLocation = null;
 
       // Check for previously stored location
-const storedLocation = localStorage.getItem('customSelectLocation');
-if (storedLocation) {
-  try {
-    const parsed = JSON.parse(storedLocation);
-    if (parsed.lat && parsed.lon && parsed.name) {
-      currentLocation = parsed;
-      log('Restored location from localStorage:', currentLocation);
+      const storedLocation = localStorage.getItem('customSelectLocation');
+      if (storedLocation) {
+        try {
+          const parsed = JSON.parse(storedLocation);
+          if (parsed.lat && parsed.lon && parsed.name) {
+            currentLocation = parsed;
+            log('Restored location from localStorage:', currentLocation);
 
-      // Set search input value
-      searchInput.value = parsed.name;
+            // Set search input value
+            searchInput.value = parsed.name;
 
-      // Update form hidden inputs and map
-      updateLocation(currentLocation);
+            // Update form hidden inputs and map
+            updateLocation(currentLocation);
 
-      // Optionally trigger results fetch
-      fetchResults();
-    }
-  } catch (e) {
-    console.error('Failed to parse stored location', e);
-  }
-}
+            // Optionally trigger results fetch
+            fetchResults();
+          }
+        } catch (e) {
+          console.error('Failed to parse stored location', e);
+        }
+      }
 
 
       // Handle form submission
@@ -85,7 +85,7 @@ if (storedLocation) {
         updateLocation(savedLocation);
         fetchResults();
       }
-      
+
 
       // Handle radius changes
       if (radiusInput) {

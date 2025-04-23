@@ -207,21 +207,11 @@ app.post('/api/events', async (req, res) => {
     if (req.headers['x-include-popups'] === 'true') {
       for (let event of events) {
         try {
-          const popupHtml = await engine.renderFile('map-popup/map-popup.liquid', {
-            event_title: event.name,
-            distance: 'Unknown distance',
-            genre: event.classifications?.[0]?.segment?.name || 'Music',
-            subgenre: event.classifications?.[0]?.subGenre?.name || '',
-            venue: event._embedded?.venues?.[0]?.name || 'Unknown Venue',
-            image_url: event.images?.[0]?.url || '',
-            event_id: event.id
-          });
-          
-          // Add the rendered popup to the event data
-          event.renderedPopup = popupHtml;
+          // Instead of storing the rendered HTML, we'll create a popup ID for later rendering
+          event.popupId = event.id;
         } catch (popupError) {
-          console.error(`Error rendering popup for event ${event.id}:`, popupError);
-          event.renderedPopup = null;
+          console.error(`Error setting popup ID for event ${event.id}:`, popupError);
+          event.popupId = null;
         }
       }
     }
@@ -241,6 +231,7 @@ app.post('/api/events', async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch events" });
   }
 });
+
 // JSON parser middleware for specific routes
 const parseJson = (req, res, next) => {
   let body = '';
@@ -309,7 +300,10 @@ app.get('/event/:id', async (req, res) => {
     
     if (!response.ok) {
       if (response.status === 404) {
-        return res.status(404).send('Event not found');
+        return res.status(404).render('error/error.liquid', {
+          error: "Event Not Found",
+          details: "The requested event could not be found."
+        });
       }
       throw new Error(`API responded with status: ${response.status}`);
     }
@@ -332,7 +326,7 @@ app.get('/event/:id', async (req, res) => {
   }
 });
 
-// API endpoint for rendering map popups
+// API endpoint for rendering map popups - UPDATED to use res.render instead of res.send
 app.post('/api/render-map-popup', parseJson, async (req, res) => {
   try {
     const { event } = req.body;
@@ -381,28 +375,28 @@ app.post('/api/render-map-popup', parseJson, async (req, res) => {
       imageUrl = image.url;
     }
     
-    // Render the map popup using the template
-    const html = await engine.renderFile('map-popup/map-popup.liquid', {
+    // Render the map popup using the template - CHANGED from res.send to res.render
+    return res.render('map-popup/map-popup.liquid', {
       event_title: eventTitle,
       distance: distance,
       genre: genre,
       subgenre: subgenre,
       venue: venue,
       image_url: imageUrl,
-      event_id: event.id
+      event_id: event.id,
+      isAjax: true
     });
-    
-    return res.send(html);
   } catch (error) {
     console.error("Error rendering map popup:", error);
-    return res.status(500).json({ 
+    return res.status(500).render('error/error.liquid', { 
       error: "Failed to render map popup",
-      details: process.env.NODE_ENV === 'development' ? error.message : null
+      details: process.env.NODE_ENV === 'development' ? error.message : null,
+      isAjax: true
     });
   }
 });
 
-// Modify the /api/events endpoint to include rendered popups
+// Modified /api/events endpoint - Using consistent rendering approach
 app.post('/api/events', async (req, res) => {
   try {
     const { latitude, longitude, radius, unit } = req.body;
@@ -424,26 +418,10 @@ app.post('/api/events', async (req, res) => {
     
     const events = await fetchEvents(latitude, longitude, searchRadius);
     
-    // For each event, try to render a map popup
+    // For each event, we store popupId instead of rendered HTML
     if (req.headers['x-include-popups'] === 'true') {
       for (let event of events) {
-        try {
-          const popupHtml = await engine.renderFile('map-popup/map-popup.liquid', {
-            event_title: event.name,
-            distance: 'Unknown distance',
-            genre: event.classifications?.[0]?.segment?.name || 'Music',
-            subgenre: event.classifications?.[0]?.subGenre?.name || '',
-            venue: event._embedded?.venues?.[0]?.name || 'Unknown Venue',
-            image_url: event.images?.[0]?.url || '',
-            event_id: event.id
-          });
-          
-          // Add the rendered popup to the event data
-          event.renderedPopup = popupHtml;
-        } catch (popupError) {
-          console.error(`Error rendering popup for event ${event.id}:`, popupError);
-          event.renderedPopup = null;
-        }
+        event.popupId = event.id;
       }
     }
     
@@ -462,6 +440,6 @@ app.post('/api/events', async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch events" });
   }
 });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
-
