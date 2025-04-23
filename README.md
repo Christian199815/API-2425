@@ -45,15 +45,14 @@ Als ik meer tijd had, zou ik graag extra filteropties toevoegen waarmee gebruike
   <img src="doc-images/event-vertical-list.png" alt="Event Vertical List" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/events-with-distance.png" alt="Events With Distance" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/form-input.png" alt="Form Input" height="300" style="flex-shrink: 0;" />
-  <img src="doc-images/image11.png" alt="Image 11" height="300" style="flex-shrink: 0;" />
-  <img src="doc-images/image12.png" alt="Image 12" height="300" style="flex-shrink: 0;" />
-  <img src="doc-images/image13.png" alt="Image 13" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/geolocation.png" alt="Image 11" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/battery.png" alt="Image 12" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/localstorage.png" alt="Image 13" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/loading-state.png" alt="Loading State" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/logo-org.png" alt="Logo Org" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/logo.png" alt="Logo" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/map-nomarkers.png" alt="Map No Markers" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/markers-on-the-map.png" alt="Markers On The Map" height="300" style="flex-shrink: 0;" />
-  <img src="doc-images/pop-removebg-preview.2.png" alt="Pop Remove Background Preview 2" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/pop-up.png" alt="Pop Up" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/stacked-markers.png" alt="Stacked Markers" height="300" style="flex-shrink: 0;" />
   <img src="doc-images/web-api-localstorage.png" alt="Web API Local Storage" height="300" style="flex-shrink: 0;" />
