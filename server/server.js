@@ -462,5 +462,6 @@ app.post('/api/events', async (req, res) => {
     return res.status(500).json({ error: "Failed to fetch events" });
   }
 });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
 
-app.listen(3000, () => console.log('Server available on http://localhost:3000'));
