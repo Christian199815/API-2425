@@ -2,6 +2,7 @@
 @import 'reset.css';
 @import "typography.css";
 @import 'properties.css';
+@import '../server/views/index.css';
 
 /*.layout and view styling */
 @import '../server/layouts/base.css';
