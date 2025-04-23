@@ -37,5 +37,25 @@ Het eindresultaat is "What's Poppin'," een webservice waarmee gebruikers kunnen 
 Als ik meer tijd had, zou ik graag extra filteropties toevoegen waarmee gebruikers kunnen sorteren, zoals op afstand. Dit is iets wat ik al meet, maar waar de gebruiker nog niet mee kan spelen. Mijn idee was om een popup te laten verschijnen wanneer een gebruiker op een evenement op de kaart klikt. De code hiervoor is al geschreven, maar in de laatste fase is er iets mis gegaan waardoor de popups niet meer zichtbaar zijn. Ik zou graag willen onderzoeken waar dit fout is gegaan en het probleem oplossen. Daarnaast zou ik de detailpagina verder willen uitbreiden met meer content, aangezien ik deze informatie uit de API kan halen.
 
 # Beeldmateriaal
-
+<div style="display: flex; overflow-x: auto; gap: 10px; padding: 20px 0;">
+  <img src="doc-images/datalist-options.png" alt="Datalist Options" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/dribble-design.png" alt="Dribble Design" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/event-detail-before.png" alt="Event Detail Before" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/event-detail.png" alt="Event Detail" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/event-vertical-list.png" alt="Event Vertical List" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/events-with-distance.png" alt="Events With Distance" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/form-input.png" alt="Form Input" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/image11.png" alt="Image 11" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/image12.png" alt="Image 12" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/image13.png" alt="Image 13" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/loading-state.png" alt="Loading State" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/logo-org.png" alt="Logo Org" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/logo.png" alt="Logo" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/map-nomarkers.png" alt="Map No Markers" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/markers-on-the-map.png" alt="Markers On The Map" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/pop-removebg-preview.2.png" alt="Pop Remove Background Preview 2" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/pop-up.png" alt="Pop Up" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/stacked-markers.png" alt="Stacked Markers" height="300" style="flex-shrink: 0;" />
+  <img src="doc-images/web-api-localstorage.png" alt="Web API Local Storage" height="300" style="flex-shrink: 0;" />
+</div>
 
